@@ -1,0 +1,1472 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="HTB-Forest-10.10.10.161, LYB&#39;s Blog">
+    <meta name="description" content="端口探测发现开着445，永恒之蓝肯定没戏，但还是要试一下，万一呢😂，果然。。。
+信息收集用enum4linux -a 10.10.10.161收集用户信息，发现一些用户名且允许空密码，还有工作组，先放着。也可以使用RPC来获取用户名rpc">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>HTB-Forest-10.10.10.161 | LYB&#39;s Blog</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <link rel="stylesheet" type="text/css" href="/css/dark.css">
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="LYB's Blog" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">LYB&#39;s Blog</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">LYB&#39;s Blog</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/1ybs3c" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/1ybs3c" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+
+<main id="main_wrap">
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/HackTheBox.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">HTB-Forest-10.10.10.161</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 137px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/HTB/">
+                                <span class="chip bg-color">HTB</span>
+                            </a>
+                        
+                            <a href="/tags/windows/">
+                                <span class="chip bg-color">windows</span>
+                            </a>
+                        
+                            <a href="/tags/kerberos/">
+                                <span class="chip bg-color">kerberos</span>
+                            </a>
+                        
+                            <a href="/tags/winrm/">
+                                <span class="chip bg-color">winrm</span>
+                            </a>
+                        
+                            <a href="/tags/impacket/">
+                                <span class="chip bg-color">impacket</span>
+                            </a>
+                        
+                            <a href="/tags/smbmap/">
+                                <span class="chip bg-color">smbmap</span>
+                            </a>
+                        
+                            <a href="/tags/enum4linux/">
+                                <span class="chip bg-color">enum4linux</span>
+                            </a>
+                        
+                            <a href="/tags/hashcat/">
+                                <span class="chip bg-color">hashcat</span>
+                            </a>
+                        
+                            <a href="/tags/Bloodhound/">
+                                <span class="chip bg-color">Bloodhound</span>
+                            </a>
+                        
+                            <a href="/tags/neo4j/">
+                                <span class="chip bg-color">neo4j</span>
+                            </a>
+                        
+                            <a href="/tags/aclpwn-py/">
+                                <span class="chip bg-color">aclpwn.py</span>
+                            </a>
+                        
+                            <a href="/tags/LDAP/">
+                                <span class="chip bg-color">LDAP</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">
+                                <span class="chip bg-color">域渗透</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/HTB/" class="post-category">
+                                HTB
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-02-14
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="端口探测"><a href="#端口探测" class="headerlink" title="端口探测"></a>端口探测</h2><p><img src="/images/HTB-Forest" alt="HTB-Forest"><br>发现开着445，永恒之蓝肯定没戏，但还是要试一下，万一呢😂，果然。。。<br><img src="/images/HTB-Forest-1" alt="HTB-Forest"></p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>用enum4linux -a 10.10.10.161收集用户信息，发现一些用户名且允许空密码，还有工作组，先放着。<br><img src="/images/HTB-Forest-2" alt="HTB-Forest"><br><img src="/images/HTB-Forest-3" alt="HTB-Forest"><br>也可以使用RPC来获取用户名<br>rpcclient -U ‘ ‘ 10.10.10.161<br>密码空<br>rpcclient $&gt;enumdomusers<br>列出rpc用户<br>虽然可以匿名访问，但是没有可用的工作组<br><img src="/images/HTB-Forest-4" alt="HTB-Forest"><br>enum4linux -P 10.10.10.161查看密码策略，得知最小密码长度为7<br><img src="/images/HTB-Forest-5" alt="HTB-Forest"><br>看来445行不通了，换思路<br>88端口运行着kerberos服务，这就触及到知识盲区了，去钻研了一番。。。<br>分享两位大佬的文章：<br><a target="_blank" rel="noopener" href="https://www.tarlogic.com/en/blog/how-to-attack-kerberos/">https://www.tarlogic.com/en/blog/how-to-attack-kerberos/</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/stable/SSO/Kerberos.html#understanding-kerberos-concepts">https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/stable/SSO/Kerberos.html#understanding-kerberos-concepts</a></p>
+<blockquote>
+<p>Kerberos版本5是Windows 2000所有版本的标准，并确保对网络资源的最高安全性。Kerberos协议名称基于希腊神话中称为Kerberos的三头狗。Kerberos的三个负责人包括密钥分发中心（<a target="_blank" rel="noopener" href="https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/stable/Glossary/Index.html#term-kdc">KDC</a>），客户端用户和具有所需访问服务的服务器。KDC作为域控制器的一部分安装，并执行两个服务功能：<br>1、身份验证服务（AS）<br>2、票务授予服务（TGS）。<br>首先，由于Kerberos是一种身份验证协议，因此可以对它执行暴力攻击。此外，强行使用Kerberos与强行使用其他身份验证方法相比具有许多优势，如下所示：</p>
+</blockquote>
+<ul>
+<li>无需域帐户即可进行攻击，只需连接到KDC。</li>
+<li>Kerberos预身份验证错误不会通过正常的登录失败事件（4625）记录在Active Directory中，而是使用Kerberos预身份验证失败的特定日志记录（4771）。</li>
+<li>即使密码错误，Kerberos也会指示用户名是否正确。在执行这种技术而又不知道任何用户名的情况下，这是一个巨大的优势。</li>
+<li>在Kerberos暴力破解中，还可以发现不需要预先身份验证的用户帐户，这对于执行ASREPRoast攻击很有用。</li>
+</ul>
+<p>但是，通过实施暴力攻击，也可以<strong>阻止用户帐户</strong>。因此，应谨慎使用此技术。</p>
+<blockquote>
+<p>AS交换<br>最初登录网络时，用户必须通过提供登录名和密码来协商访问权限，以便由KDC的AS部分进行验证。KDC有权访问Active Directory用户帐户信息。成功通过身份验证后，将向用户授予“获取票证”（TGT），该票证对本地域（在我们的示例中，对于领域example.com）有效。TGT的默认生存期为10个小时，可以在用户的​​整个登录会话期间进行更新，而无需用户重新输入密码。<br>如果KDC批准了客户的TGT请求，则答复（称为AS答复）将包括两个部分：使用仅KDC（TGS）可以解密的密钥加密的TGT和使用用户密码加密的会话密钥哈希以处理与KDC的将来通信。由于客户端系统无法读取TGT内容，因此必须盲目将票证提供给TGS以获得服务票证。TGT包括生存时间参数，授权数据，与客户端通信时使用的会话密钥和客户端名称。<br>TGS交换<br>为用户呈现所述TGT到的TGS部分KDC希望访问服务器服务时。KDC上的TGS对用户的TGT进行身份验证，并为客户端和远程服务器创建票证和会话密钥。然后，该信息称为服务票证，然后在客户端计算机上本地缓存。<br>TGS接收客户端的TGT并使用其自己的密钥读取它。如果TGS批准了客户端的请求，则会为客户端和目标服务器生成服务票证。客户端使用从AS答复中较早获取的TGS会话密钥读取其部分。客户端在接下来要进行的客户端/服务器交换中将TGS答复的服务器部分呈现给目标服务器。<br>客户/服务器交换<br>一旦客户端用户获得了客户端/服务器服务票证，他就可以与服务器服务建立会话。服务器可以使用自己的KDC长期密钥来解密来自TGS的间接信息。然后，该服务票证用于验证客户端用户并在服务器和客户端之间建立服务会话。超过票证的生命周期后，必须续订服务票证才能使用该服务。</p>
+</blockquote>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>下载可以获得TGT的工具<br><img src="/images/HTB-Forest-6" alt="HTB-Forest"></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">apt-get</span> <span class="token function">install</span> pip
+pip insatall -r requirements.txt
+python setup.py <span class="token function">install</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><img src="/images/HTB-Forest-7" alt="HTB-Forest"><br>通过查看impacket的官方文档发现GetNPUsers.py可以获取不需要预身份验证的用户并获取TGT<br><img src="/images/HTB-Forest-8" alt="HTB-Forest"><br>使用方法：<br><img src="/images/HTB-Forest-9" alt="HTB-Forest"><br>但是执行完报错。。。此处卡了很久<br><img src="/images/HTB-Forest-10" alt="HTB-Forest"><br>直到我回过头来看nmap扫描结果看看能不能发现新线索时，发现域名不是forest.htb，而是htb.local。。。坑啊<br><img src="/images/HTB-Forest-11" alt="HTB-Forest"><br>再次尝试，bingo！不需要预身份验证的用户是svc-alfresco<br>如果提示时间不对，可以执行：rdate -n forest.htb来同步靶机时间 或者 ntp <server-ip><br><img src="/images/HTB-Forest-12" alt="HTB-Forest"><br>接下来使用hashcat破解密码，通过查阅hashcat官方对照表，发现需要使用18200模式破解<br>或者在终端输入./hashcat –example-hashes | grep -i krb #查找具体的类型<br>./hashcat –example-hashes | less #按下/输入krb5asrep$23查找具体的mode<br><img src="/images/HTB-Forest-13" alt="HTB-Forest"><br>根据之前的经历，由于kali没有装显卡驱动，就在win上跑吧<br>输入： hashcat64.exe -m 18200 -a 0 –force C:\Users\LYB\Desktop\hashes.asreproast D:#Hacking#penetration-渗透资料\密码字典（rockyou.txt）\rockyou.txt<br><img src="/images/HTB-Forest-14" alt="HTB-Forest"><br>得到密码：s3rvice<br><img src="/images/HTB-Forest-15" alt="HTB-Forest"><br>用这个密码尝试登录smb，不行。。<br><img src="/images/HTB-Forest-16" alt="HTB-Forest"><br>用smbmap试试：<br><img src="/images/HTB-Forest-17" alt="HTB-Forest"><br>枚举可被只读的用户文件<br><img src="/images/HTB-Forest-18" alt="HTB-Forest"><br>没有什么有价值的信息<br>尝试直接获取admin票据<br><img src="/images/HTB-Forest-19" alt="HTB-Forest"><br>然而并不成功。。<br><img src="/images/HTB-Forest-20" alt="HTB-Forest"><br>此处又卡住了，知道账户密码却不知道从哪登录😭<br>上全端口扫一遍<br><img src="/images/HTB-Forest-21" alt="HTB-Forest"><br>这两个端口比较可疑：5985、47001<br>网上搜索了一番发现5985端口上运行着winrm（windows远程管理），感觉有戏<br>在github上找到了针对winrm的工具<br>#git clone <a target="_blank" rel="noopener" href="https://github.com/Hackplayers/evil-winrm">https://github.com/Hackplayers/evil-winrm</a><br>直接运行会报错：<br><img src="/images/HTB-Forest-22" alt="HTB-Forest"><br>发现报错了，查看官方文档发现缺少依赖<br><img src="/images/HTB-Forest-23" alt="HTB-Forest"><br>执行#gem install winrm winrm-fs stringio<br><img src="/images/HTB-Forest-24" alt="HTB-Forest"><br>再次执行：<br><img src="/images/HTB-Forest-25" alt="HTB-Forest"><br>这。。网上搜了一些报错原因：<br>“该用户未加入到远程管理组”<br>需在服务端输入：</server-ip></p>
+<pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">winrm set winrm/config/client/auth @{Basic="true"}
+winrm set winrm/config/service/auth @{Basic="true"}
+winrm set winrm/config/service @{AllowUnencrypted="true"}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>但是我现在连shell都没有拿啥设置。。。<br><img src="/images/HTB-Forest-26" alt="HTB-Forest"><br>网上遨游了一番后得知，需要使用getTGT.py脚本生成一个ccache缓存，让服务器信任我，才能通过winrm访问<br>1、越过哈希/通过密钥（PTK）<br>该攻击旨在使用用户NTLM哈希来请求Kerberos票证，以替代常见的“通过NTLM哈希”协议。因此，这在禁用NTLM协议且仅允许Kerberos作为身份验证协议的网络中特别有用。<br>为了执行此攻击，需要目标用户帐户的NTLM哈希（或密码）。因此，一旦获得用户哈希，就可以为该帐户请求TGT。最后，可以访问用户帐户具有权限的任何服务或计算机。<br>2、由于请求的TGT&nbsp;被写入ccache文件中，因此它也可以与带有参数-k的其他impacket&nbsp;示例一起使用，甚至可以与其他工具一起使用（如smbexec.py或wmiexec.py），这是Kerberos票证的一种广泛使用的格式。在Linux中。<br><img src="/images/HTB-Forest-27" alt="HTB-Forest"><br>再次执行之前的evil-winrm脚本，成功！<br><img src="/images/HTB-Forest-28" alt="HTB-Forest"><br>后来发现之前一直连着到新加坡的vpn，断掉35的vpn就可以直接访问。。。<br>不容易，这完全不像一个定级到简单的机器</p>
+<h2 id="get-user-flag"><a href="#get-user-flag" class="headerlink" title="get user flag"></a>get user flag</h2><p><img src="/images/HTB-Forest-29" alt="HTB-Forest"></p>
+<h2 id="权限提升"><a href="#权限提升" class="headerlink" title="权限提升"></a>权限提升</h2><p>接下来开始提权到Admin<br>由于特殊时期，vpn网络有些波动，导致拿到的shell交互很慢，尝试利用python简单http服务传输mimikatz、nc等工具，但效果不理想，刚传上去就断了，或者运行程序直接卡死。。所以就先放一放去看绿盟课程了，明天继续<br>在拿到普通用户权限之后首先想到的是运行GetUserSPNs.py：（此脚本将尝试查找和获取与普通用户帐户关联的服务主体名称。输出与JtR和HashCat兼容）。事实告诉我没这么简单<br><img src="/images/HTB-Forest-30" alt="HTB-Forest"><br>接着尝试mimikatz读内存里登录用户的密码<br>将用到的工具上传至靶机<br><img src="/images/HTB-Forest-31" alt="HTB-Forest"><br>由于这个这个shell不稳定，所以用nc反弹一个试试<br><img src="/images/HTB-Forest-32" alt="HTB-Forest"><br>一样的卡，还是用evil吧。。<br><img src="/images/HTB-Forest-33" alt="HTB-Forest"><br>由于网络问题，直接执行mimikatz会直接卡死，无法交互，所以输入：<br><img src="/images/HTB-Forest-34" alt="HTB-Forest"><br>mimikatz.exe “”privilege::debug”” “”log sekurlsa::logonpasswords full”” exit &gt;&gt; shash.txt<br>读取shash内容，并没有读到hash，应该是权限不够<br><img src="/images/HTB-Forest-35" alt="HTB-Forest"><br>尝试下载SAM数据库也无果，内容为空，或者是因为没权限下载</p>
+<h2 id="BloodHound"><a href="#BloodHound" class="headerlink" title="BloodHound"></a>BloodHound</h2><p>又没思路了，在网上搜了一番域渗透提权的文章后，我把目标锁定在了<a target="_blank" rel="noopener" href="https://github.com/BloodHoundAD/BloodHound">BloodHound</a></p>
+<blockquote>
+<p>简介和背景</p>
+</blockquote>
+<blockquote>
+<p>2014年，Emmanuel Gras和Lucas Bouillot在“ 信息通信技术研讨会”（Symposium on Information and Communications）上发表了题为“&nbsp;Chemins decontrôleen environement Active Directory&nbsp;”（“Active Directory 控制路径”）的安全技术演讲，在演讲中他们使用图论和Active Directory对象权限来回答“谁能成为域管理员”的问题？我强烈建议你查看他们的演示文稿和白皮书，我们从这些资料中为BloodHound项目获得了最初的一些灵感以及我们添加到BloodHound攻击图的对象控制路径的非常有用的和具体的信息。</p>
+</blockquote>
+<blockquote>
+<p>Rohan Vazarkar（@CptJesus），Will Schroeder（@harmj0y）和我很自豪地宣布BloodHound 1.3的发布，它引入了基于Active Directory对象控制的几种新的边缘类型。此外，Will和Lee（@tifkin_）在开发相应的PowerShell cmdlet方面做了大量的工作，使得pentester或red teamer能够利用这些新的边缘类型。我们认为基于ACL的攻击路径将开辟Active Directory域中的攻击格局的“新大陆”。</p>
+</blockquote>
+<p>信息搜集脚本：SharpHound.exe、SharpHound.ps1使用说明：<br><img src="/images/HTB-Forest-36" alt="HTB-Forest"><br>上传ps1、exe扫描脚本并执行（ -c all 指的是执行除GPOLocalGroup和LoggedOn之外的所有收集方法）<br><img src="/images/HTB-Forest-37" alt="HTB-Forest"><br>也可以在本地执行<br>./SharpHound.ps1 -c all -d htb.local –domaincontroller 10.10.10.161<br>下载BloodHound在本地分析，以图形化展示更多信息<br><img src="/images/HTB-Forest-38" alt="HTB-Forest"><br>安装完BloodHound之后运行，报错。查看官方文档得知需要neo4j环境<br><img src="/images/HTB-Forest-39" alt="HTB-Forest"><br>今天有点晚了，明天继续搞</p>
+<hr>
+<p>在kali上安装neo4j<br><img src="/images/HTB-Forest-40" alt="HTB-Forest"><br>配置neo4j，输入neo4j console<br><img src="/images/HTB-Forest-41" alt="HTB-Forest"><br>在浏览器打开<a href="http://localhost:7474页面更改密码">http://localhost:7474页面更改密码</a><br>使用默认凭据登录（如下），然后将要求您更改密码：<br>用户名：neo4j<br>密码：neo4j<br>new password :kali<br><img src="/images/HTB-Forest-42" alt="HTB-Forest"><br>改过密码后用得到连接路径<br><img src="/images/HTB-Forest-43" alt="HTB-Forest"><br>输入neo4j strat启动neo4j<br><img src="/images/HTB-Forest-44" alt="HTB-Forest"><br>在终端输入bloodhound启动<br><img src="/images/HTB-Forest-45" alt="HTB-Forest"><br>输入账户密码后登录，将扫描的结果导入<br><img src="/images/HTB-Forest-46" alt="HTB-Forest"><br><img src="/images/HTB-Forest-47" alt="HTB-Forest"><br>但是。。导入进去没数据，又再网上找了一阵子原因<br><img src="/images/HTB-Forest-48" alt="HTB-Forest"><br>最后得知要将github项目中Bloodhound的示例数据库替换掉neo4j原来的数据库。。。<br><img src="/images/HTB-Forest-49" alt="HTB-Forest"><br>再次导入，成功！<br><img src="/images/HTB-Forest-50" alt="HTB-Forest"><br>将示例自带的数据删除，添加刚才扫描的结果<br><img src="/images/HTB-Forest-51" alt="HTB-Forest"><br>点击查找到admin的最短路径，得到该域控网络拓朴图<br><img src="/images/HTB-Forest-52" alt="HTB-Forest"><br>右键write Dacl点击help，查看提权利用办法<br><img src="/images/HTB-Forest-53" alt="HTB-Forest"><br><img src="/images/HTB-Forest-54" alt="HTB-Forest"><br>我看到中间有一个exchange的群组，就搜了一下有关它的越权漏洞，和权限滥用<br><a target="_blank" rel="noopener" href="https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/">https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/</a></p>
+<blockquote>
+<p>默认情况下，Exchange Windows Permissions安全组对安装Exchange的域的域对象具有writeDACL权限。</p>
+</blockquote>
+<blockquote>
+<p>writeDACL权限允许身份修改对指定对象的权限（换句话说：修改ACL），这意味着通过成为组织管理组的成员，我们可以将特权提升为域管理员的特权。&nbsp;为了利用这一点，我们将先前获得的用户帐户添加到该Exchange Trusted Subsystem组中。我们再次登录（因为安全组成员资格仅在登录时加载），现在我们是该Exchange Trusted Subsystem组和该Exchange Windows Permission组的成员，这使我们能够修改域的ACL。</p>
+</blockquote>
+<blockquote>
+<p>如果您有权修改AD对象的ACL，则可以将权限分配给允许其写入特定属性（例如包含电话号码的属性）的身份。除了为这些类型的属性分配读/写权限外，还可以为扩展权限分配权限。这些权限是预定义的任务，例如更改密码，向邮箱发送电子邮件的权限以及更多。通过应用以下扩展权限，也可以将任何给定帐户添加为域的复制伙伴：</p>
+</blockquote>
+<ul>
+<li><em>复制目录更改</em></li>
+<li><em>全部复制目录更改</em></li>
+</ul>
+<blockquote>
+<p>当我们为用户帐户设置这些权限时，我们能够请求域中任何用户的密码哈希，包括域的krbtgt帐户的密码哈希。可在以下GitHub页面上找到有关此特权升级技术的更多信息：https : //github.com/gdedrouas/Exchange-AD-Privesc</p>
+</blockquote>
+<p>同时我在搜索引擎中遨游时发现了使用aclpwn工具可以找到最短攻击路径：（要配合Bloodhound）<br><a target="_blank" rel="noopener" href="https://github.com/fox-it/aclpwn.py/wiki/Quickstart">https://github.com/fox-it/aclpwn.py/wiki/Quickstart</a><br><img src="/images/HTB-Forest-55" alt="HTB-Forest"><br>将svc-alfresco添加到Exchange Trusted Subsystem组<br><img src="/images/HTB-Forest-56" alt="HTB-Forest"><br>但是我发现添加完之后，还没来得及操作，就从exchange里退出来了，可能因为这是一台公共靶机，用户配置在几十秒后会被重置，所以我新建了一个账户llyb<br><img src="/images/HTB-Forest-57" alt="HTB-Forest"><br>或者用以下命令：<br><img src="/images/HTB-Forest-58" alt="HTB-Forest"><br>直接切换用户不行，秒退<br><img src="/images/HTB-Forest-59" alt="HTB-Forest"><br>添加完用户之后的拓朴图：<br><img src="/images/HTB-Forest-60" alt="HTB-Forest"><br>给lyb用户赋予管理权限：<br><img src="/images/HTB-Forest-61" alt="HTB-Forest"><br>使用impacket项目中的secretsdump.py获得Administrator的hash<br><img src="/images/HTB-Forest-62" alt="HTB-Forest"></p>
+<blockquote>
+<p>该脚本原理：执行各种技术以从远程计算机中转储秘密，而无需在该计算机上执行任何代理。对于SAM和LSA机密（包括缓存的凭据），我们尝试从注册表中读取尽可能多的内容，然后将配置单元保存在目标系统（％SYSTEMROOT％\ Temp目录）中，并从那里读取其余数据。对于DIT文件，我们使用DL_DRSGetNCChanges（）方法转储NTLM哈希，纯文本凭据（如果可用）和Kerberos密钥。它还可以通过使用smbexec / wmiexec方法执行的vssadmin转储NTDS.dit。如果脚本不可用，该脚本将启动其工作所需的服务（例如，即使已禁用，也应使用“远程注册表”）。工作完成后，一切恢复到原始状态。</p>
+</blockquote>
+<p>拿到hash之后想使用hashcat破解出来明文，再进行登录，但是网上还有hashcat都没有<br><img src="/images/HTB-Forest-63" alt="HTB-Forest"><br>最后还是利用impacket项目中的wmiexec.py可以直接利用NTLM_hash来登录admin，成功！！！（用psexec.py也可以）<br><img src="/images/HTB-Forest-64" alt="HTB-Forest"></p>
+<blockquote>
+<p>原理：整个过程是先调用WMI通过账号密码或者NTLM认证（WCE注入）连接到远程计算机，然后如果提供了账号密码，则用这个账号密码建立一个到目标的IPC连接。随后WMI会建立一个共享文件夹，用于远程读取命令执行结果。</p>
+</blockquote>
+<blockquote>
+<p>当用户输入命令时，WMI创建进程执行该命令，然后把结果输出到文件，这个文件位于之前创建的共享文件夹中。最后，通过FSO组件访问远程共享文件夹中的结果文件，将结果输出。当结果读取完成时，调用WMI执行命令删除结果文件。最后当WMIEXEC退出时，删除文件共享。</p>
+</blockquote>
+<blockquote>
+<p>由于WMI只负责创建进程，没有办法可以判断命令是否执行完毕，所以脚本采用的方法是延迟1200ms后读取结果文件，但是如果命令执行的时间大于1200ms，比如systeminfo 或者ping之类的，这时候读取结果文件会导致读取的结果不完整，然后在删除结果文件时会出错。</p>
+</blockquote>
+<h2 id="get-root-flag"><a href="#get-root-flag" class="headerlink" title="get root flag"></a>get root flag</h2><p><img src="/images/HTB-Forest-65" alt="HTB-Forest"></p>
+<p>第一次做windows的靶机本以为很简单，没想到是台域控服务器，一切都是从零开始，感谢这台靶机的作者，让我学到了很多关于smb枚举和利用、kerberos认证、域控、windows访问控制列表、exchange权限滥用、windows提权等相关知识。了解了enum4linux、smbmap、BloodHound、neo4j、impacket、evil-winrm、mimikatz、aclpwn等工具并学习了其工作原理。今后会多做一些windows的机器来弥补不足<br><img src="/images/HTB-Forest-66" alt="HTB-Forest"><br>已使用 OneNote 创建。</p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">LYB</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://1ybs3c.github.io/2020/02/14/HTB-Forest-10%2010%2010%20161/">https://1ybs3c.github.io/2020/02/14/HTB-Forest-10%2010%2010%20161/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">LYB</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/HTB/">
+                                    <span class="chip bg-color">HTB</span>
+                                </a>
+                            
+                                <a href="/tags/windows/">
+                                    <span class="chip bg-color">windows</span>
+                                </a>
+                            
+                                <a href="/tags/kerberos/">
+                                    <span class="chip bg-color">kerberos</span>
+                                </a>
+                            
+                                <a href="/tags/winrm/">
+                                    <span class="chip bg-color">winrm</span>
+                                </a>
+                            
+                                <a href="/tags/impacket/">
+                                    <span class="chip bg-color">impacket</span>
+                                </a>
+                            
+                                <a href="/tags/smbmap/">
+                                    <span class="chip bg-color">smbmap</span>
+                                </a>
+                            
+                                <a href="/tags/enum4linux/">
+                                    <span class="chip bg-color">enum4linux</span>
+                                </a>
+                            
+                                <a href="/tags/hashcat/">
+                                    <span class="chip bg-color">hashcat</span>
+                                </a>
+                            
+                                <a href="/tags/Bloodhound/">
+                                    <span class="chip bg-color">Bloodhound</span>
+                                </a>
+                            
+                                <a href="/tags/neo4j/">
+                                    <span class="chip bg-color">neo4j</span>
+                                </a>
+                            
+                                <a href="/tags/aclpwn-py/">
+                                    <span class="chip bg-color">aclpwn.py</span>
+                                </a>
+                            
+                                <a href="/tags/LDAP/">
+                                    <span class="chip bg-color">LDAP</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">
+                                    <span class="chip bg-color">域渗透</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/03/16/HTB-Paper-10.10.11.143/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/HackTheBox.png" class="responsive-img" alt="HTB-Paper-10.10.11.143">
+                        
+                        <span class="card-title">HTB-Paper-10.10.11.143</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-03-16
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/HTB/" class="post-category">
+                                    HTB
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/HTB/">
+                        <span class="chip bg-color">HTB</span>
+                    </a>
+                    
+                    <a href="/tags/wordpress/">
+                        <span class="chip bg-color">wordpress</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/02/14/HTB-Forest-10%2010%2010%20161/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/HackTheBox.png" class="responsive-img" alt="HTB-Forest-10.10.10.161">
+                        
+                        <span class="card-title">HTB-Forest-10.10.10.161</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/HTB/" class="post-category">
+                                    HTB
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/HTB/">
+                        <span class="chip bg-color">HTB</span>
+                    </a>
+                    
+                    <a href="/tags/windows/">
+                        <span class="chip bg-color">windows</span>
+                    </a>
+                    
+                    <a href="/tags/kerberos/">
+                        <span class="chip bg-color">kerberos</span>
+                    </a>
+                    
+                    <a href="/tags/winrm/">
+                        <span class="chip bg-color">winrm</span>
+                    </a>
+                    
+                    <a href="/tags/impacket/">
+                        <span class="chip bg-color">impacket</span>
+                    </a>
+                    
+                    <a href="/tags/smbmap/">
+                        <span class="chip bg-color">smbmap</span>
+                    </a>
+                    
+                    <a href="/tags/enum4linux/">
+                        <span class="chip bg-color">enum4linux</span>
+                    </a>
+                    
+                    <a href="/tags/hashcat/">
+                        <span class="chip bg-color">hashcat</span>
+                    </a>
+                    
+                    <a href="/tags/Bloodhound/">
+                        <span class="chip bg-color">Bloodhound</span>
+                    </a>
+                    
+                    <a href="/tags/neo4j/">
+                        <span class="chip bg-color">neo4j</span>
+                    </a>
+                    
+                    <a href="/tags/aclpwn-py/">
+                        <span class="chip bg-color">aclpwn.py</span>
+                    </a>
+                    
+                    <a href="/tags/LDAP/">
+                        <span class="chip bg-color">LDAP</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">
+                        <span class="chip bg-color">域渗透</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src=""></script>
+<script>
+    $.getScript("/libs/tocbot/tocbot.min.js",function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    })
+</script>
+
+    
+
+</main>
+
+
+
+</main>
+
+<footer class="page-footer bg-color">
+    
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2017-2022</span>
+            
+            <a href="/about" target="_blank">LYB</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">4.8k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/1ybs3c" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+<!-- 深色模式按钮 -->
+<a onclick="switchNightMode()" id="sma" title="模式切换">
+    <i class="fa fa-moon" id="nightMode" aria-hidden="true"></i>
+</a>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+<script type="text/javascript">
+    $.getScript("https://files.islu.cn/static/pjax/pjax.min.js",loadPjax)
+    function loadPjax(){
+        var pjax = new Pjax({
+            selectors: [
+                "head title",
+                'head meta[name="keywords"]',
+                'head meta[name="description"]',
+                "main#main_wrap",
+                "#rightside"
+            ],
+            cache: true,
+            cacheBust: false
+        });
+    }
+
+    // 开始 PJAX 执行的函数
+    document.addEventListener('pjax:send', function () {
+    });
+    // PJAX 完成之后执行的函数，可以和上面的重载放在一起
+    document.addEventListener('pjax:complete', function () {
+        document.querySelectorAll('script[data-pjax]').forEach(item => {
+            const newScript = document.createElement('script')
+            const content = item.text || item.textContent || item.innerHTML || ""
+            Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+            newScript.appendChild(document.createTextNode(content))
+            item.parentNode.replaceChild(newScript, item)
+        })
+    });
+
+    // Pjax请求错误时，跳转到404页面
+    document.addEventListener('pjax:error', (err) => {
+        if (err.request.status === 404) {
+            pjax.loadUrl('/404.html')
+        }
+    })
+</script>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+
+
+
+
+<!-- 雪花特效 -->
+
+
+<!-- 鼠标星星特效 -->
+
+
+
+    <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+    <script src="/libs/others/TencentCaptcha.js"></script>
+    <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button"
+            hidden></button>
+
+
+<!-- Baidu Analytics -->
+
+<!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+
+    <script src="/libs/others/clicklove.js" async="async"></script>
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<!--腾讯兔小巢-->
+
+
+
+
+
+
+
+
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+
+
+</body>
+
+</html>

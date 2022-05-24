@@ -32,7 +32,7 @@
         max-width: 1250px;
     }
 }
-
+/*
 body {
     background-color: #eaeaea;
     margin: 0;
@@ -40,7 +40,14 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
 }
-
+*/
+body
+{ 
+	background-image:url('../medias/banner/1.jpg');
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-position:center; 
+}
 h1 {
     margin: 48px 0 22px -5px;
     font-size: 2.0rem;
